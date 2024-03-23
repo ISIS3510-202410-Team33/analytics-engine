@@ -3,19 +3,17 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from analytics_engine.settings import FIREBASE_BUCKET as bucket
+from processing.views import *
 
 
-# Create your views here.
-@csrf_exempt
-def prueba_view(request):
-    print(type(bucket))
-    return HttpResponse('Ok')
+def analytics_top_buildings(request):
+    res = ingest_top_buildings(request)
+    return process_top_buildings(res)
 
 
-
-def top_buildings(request):
+def ingest_top_buildings(request):
     """
-    Returns the top number of buildings. Answers BQ 5
+    Ingests the data for the process in question
     :param request: HTTP request
     :return: list of the x top buildings
     """
@@ -46,14 +44,11 @@ def top_buildings(request):
                 # Actualizar el conteo del edificio
                 conteos_por_edificio[edificio] = conteos_por_edificio.get(edificio, 0) + conteo
 
-        # Ordenar los edificios por la cantidad de visitas (valores) en orden descendente
-        top_edificios = sorted(conteos_por_edificio.items(), key=lambda x: x[1], reverse=True)
-
-        # Seleccionar los tres primeros edificios del top
-        top_3_edificios = top_edificios[:3]
-
         return JsonResponse({
-            "msg": {"edificios": top_3_edificios}
-        }, status=200)
+            "msg": {"conteos_por_edificio": conteos_por_edificio}
+        }, status=200, safe=False)
+
     except:
-        return JsonResponse({"msg: Error processing the request"}, status=503)
+        return JsonResponse({
+            "msg: Error ingesting the request"
+        }, status=503)

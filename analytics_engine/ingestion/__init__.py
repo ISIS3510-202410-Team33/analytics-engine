@@ -1,3 +1,3 @@
 from .startup import *
 
-conect_firebase()
+connect_firebase()

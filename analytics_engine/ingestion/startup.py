@@ -2,7 +2,7 @@ import analytics_engine.settings as st
 from firebase_admin import credentials, storage, initialize_app
 
 
-def conect_firebase():
+def connect_firebase():
     """
     Conects to the Firebase for further use
     :return: None
