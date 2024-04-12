@@ -34,8 +34,8 @@ def process_files(bucket):
         # Obtener el nombre del archivo
         filename = blob.name
         
-        # Ignorar el archivo "edificios.json"
-        if filename == "edificios.json":
+        # Ignorar el archivo "edificios.json" y el archivo "calificaciones.json"
+        if filename == "edificios.json" or filename == "calificaciones.json":
             continue
         
         # Descargar el archivo JSON
